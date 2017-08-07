@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Endica</title>
+    
+    <!-- This is a basic cordova template to load a mobile optimized website and package as hybrid app for distribution through App Stores. -->
+    
+    <!-- This type of app is recommended for websites built with an app like look-and-feel, responsive, single-page-app with no external website links or redirection -->
+    
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+ 	
+	<script src="cordova.js"></script>
+    <script>
+        function onDeviceReady(){
+            checkConnection();
+            navigator.splashscreen.hide();
+        }
+        document.addEventListener("deviceready", onDeviceReady, false);
+        
+        function checkConnection(){
+            if(navigator.network.connection.type == Connection.NONE){
+                document.getElementById("noconn").style.display = "block";
+                document.getElementById("loading").style.display = "none";
+            } else {
+                // change this URL to your web app URL
+                // make sure the web app is developed with all navigation and does not jump to external websites
+                
+                //*********************************//
+                
+                var url = "http://1appsmobi.web2427.uni5.net/var/apps/browser/index-prod.html#/overview";
+                
+                //*********************************//
+                
+                openInAppBrowser(url);    
+            }            
+        }
+        
+        function retryConnection(){
+            document.getElementById("noconn").style.display = "none";
+            document.getElementById("loading").style.display = "block";
+            // adding delay for UX
+            setTimeout(function(){
+                checkConnection();
+            }, 500);    
+        }
+        
+        function openInAppBrowser(url){
+            var iab = window.open(url, "_blank", "location=no,toolbar=no,hidden=yes");
+
+            iab.addEventListener('loadstop', function(){
+                iab.show();
+            });
+            
+            iab.addEventListener('loadstart', function(obj){
+                if(navigator.network.connection.type == Connection.NONE){
+                    navigator.notification.alert("Internet connection was not detected, check your connection and retry", null, "No Internet");   
+                }
+            });
+
+            iab.addEventListener('loaderror', function(){
+                document.getElementById("noconn").style.display = "block";
+                document.getElementById("loading").style.display = "none";
+            });            
+        }
+    </script>
+   
+   
+    <style>
+        body {text-align: center;font-family: Arial;background-color: #eee}
+        #noconn {display:none}
+        .button {display:inline;padding:20px;border:1px solid #777;background-color: #ddd; border-radius: 5px}
+       
+         /* layout celular - vertical (default) */
+		.app {
+         background:url(./img/logo.png) no-repeat center top; /* 170px x 200px */
+         position:absolute;             /* position in the center of the screen */
+         left:50%;
+         top:50%;
+         height:50px;                   /* text area height */
+         width:225px;                   /* text area width */
+         text-align:center;
+         padding:180px 0px 0px 0px;     /* image height is 200px (bottom 20px are overlapped with text) */
+         margin:-115px 0px 0px -112px;  /* offset vertical: half of image height and text area height */
+                                   /* offset horizontal: half of text area width */
+		}
+		
+      /* layout tablete - horizontal (with min-width) */
+      @media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
+      .app {
+       background-position:left center;
+       padding:75px 0px 75px 170px;  /* padding-top + padding-bottom + text area = image height */
+       margin:-90px 0px 0px -198px;  /* offset vertical: half of image height */
+                                      /* offset horizontal: half of image width and text area width */
+       }
+       }
+       
+	   /* para fazer "carregando" piscar */ 
+	   .blink {
+        animation:fade 3000ms infinite;
+        -webkit-animation:fade 3000ms infinite;
+	   }
+	   
+	   
+	   @keyframes fade {
+       from { opacity: 1.0; }
+       50% { opacity: 0.4; }
+       to { opacity: 1.0; }
+       }
+ 
+      
+	   @-webkit-keyframes fade {
+       from { opacity: 1.0; }
+       50% { opacity: 0.4; }
+       to { opacity: 1.0; }
+       }
+	   /* fim */
+	   
+    </style>
+    
+        
+</head>
+<body>
+    <div class="app">
+        
+              
+        
+        <p id="loading" class="blink">Carregando...</p>
+        <div id="noconn">
+            <p>Sem conexão com a internet</p>
+            <br>
+            <p><div class="button" onclick="retryConnection()">Tente de novo</div></p>
+        </div>
+    </div>
+</body>
+</html>
